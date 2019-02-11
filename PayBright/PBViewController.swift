@@ -16,8 +16,6 @@ public protocol PBWebViewDelegate: class {
     
     func userDidCancel()
     
-    func parametersReceived(params: [String: Any]?)
-    
     func transactionComplete(success: Bool, params: [String: String])
 }
 
@@ -134,9 +132,6 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
         
         
         isFrance = (productDict?["x_shop_country"] as! String).caseInsensitiveCompare("CA-fr") == .orderedSame
-        
-        
-        delegate?.parametersReceived(params: productDict)
         
         
         // Sort dictionary and get the string
@@ -615,6 +610,9 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
                 var urlParams = url.queryParameters
                 
                 
+                let receivedParams = urlParams
+                
+                
                 let generatedSignature = urlParams!["x_signature"]
                 
                 
@@ -640,18 +638,18 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
                     
                     if generatedSignature == sortedStr.HMAC(algorithm: .sha256, secret: PBConfig.shared.apiToken)
                     {
-                        delegate?.transactionComplete(success: true, params: urlParams!)
+                        delegate?.transactionComplete(success: true, params: receivedParams!)
                     }
                     
                     else
                     {
-                        delegate?.transactionComplete(success: false, params: [:])
+                        delegate?.transactionComplete(success: false, params: receivedParams!)
                     }
                 }
                 
                 else
                 {
-                    delegate?.transactionComplete(success: false, params: [:])
+                    delegate?.transactionComplete(success: false, params: receivedParams!)
                 }
                 
                 
