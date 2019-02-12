@@ -1,4 +1,0 @@
-framework module PayBright {
-  header "PayBright-Swift.h"
-  requires objc
-}
