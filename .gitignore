@@ -1,4 +1,4 @@
-```# Xcode
+# Xcode
 #
 build/
 *.pbxuser
@@ -35,4 +35,4 @@ Carthage/
 #
 .docs/
 
-node_modules/```
+node_modules/
