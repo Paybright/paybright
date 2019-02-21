@@ -50,7 +50,7 @@ public class PBProduct {
                 urlCancel:      String,
                 urlComplete:    String) {
         
-        self.amount             = String(format:"%.1f", amount)
+        self.amount             = String(format:"%.2f", amount)
         
         self.currency           = currency
         
