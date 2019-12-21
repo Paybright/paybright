@@ -20,21 +20,19 @@ public protocol PBWebViewDelegate: class {
 }
 
 
-public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariViewControllerDelegate, UIWebViewDelegate {
+public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
     
     var isFrance: Bool = false
     
     
-    var pbwkWebView: WKWebView!
-    
-    
     var progressHUD: PBPRogressHUD?
     
     
-    @IBOutlet var containerV: UIView!
+    @IBOutlet weak var containerV: UIView!
     
-    @IBOutlet var pbuiWebView: UIWebView!
+    
+    @IBOutlet weak var pbwkWebView: WKWebView!
     
     
     public weak var delegate: PBWebViewDelegate?
@@ -84,9 +82,6 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
         
         
         self.view.addSubview(progressHUD!)
-        
-        
-        //launchUIWebViewWithRequest(request: request)
         
         
         launchWKWebViewWithRequest(request: request)
@@ -158,24 +153,6 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
     }
     
     
-    /*func clearUIWebViewCache() {
-        
-        pbuiWebView.loadRequest(URLRequest(url: URL(string: "about:blank")!))
-        
-        
-        URLCache.shared.removeAllCachedResponses()
-        
-        
-        if let cookies = HTTPCookieStorage.shared.cookies
-        {
-            for cookie in cookies
-            {
-                HTTPCookieStorage.shared.deleteCookie(cookie)
-            }
-        }
-    }*/
-    
-    
     func clearWKWebViewCache() {
         
         pbwkWebView.load(URLRequest(url: URL(string:"about:blank")!))
@@ -240,29 +217,12 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
     }
     
     
-    /*func launchUIWebViewWithRequest(request: URLRequest) {
-        
-        pbuiWebView.isHidden = false
-        
-        pbuiWebView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        NSLog("started")
-        
-        
-        pbuiWebView.loadRequest(request)
-    }*/
-    
-    
     func launchWKWebViewWithRequest(request: URLRequest) {
         
-        pbuiWebView.isHidden = true
+        //let webConfiguration = WKWebViewConfiguration()
         
         
-        let webConfiguration = WKWebViewConfiguration()
-        
-        
-        pbwkWebView = WKWebView (frame: .zero , configuration: webConfiguration)
+        //pbwkWebView = WKWebView (frame: .zero , configuration: webConfiguration)
         
         pbwkWebView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -278,18 +238,18 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
         }
         
         
-        containerV.addSubview(pbwkWebView)
+        //containerV.addSubview(pbwkWebView)
         
         
-        pbwkWebView.topAnchor.constraint(equalTo: containerV.topAnchor).isActive          = true
-        
-        pbwkWebView.rightAnchor.constraint(equalTo: containerV.rightAnchor).isActive      = true
-        
-        pbwkWebView.leftAnchor.constraint(equalTo: containerV.leftAnchor).isActive        = true
-        
-        pbwkWebView.bottomAnchor.constraint(equalTo: containerV.bottomAnchor).isActive    = true
-        
-        pbwkWebView.heightAnchor.constraint(equalTo: containerV.heightAnchor).isActive    = true
+        //pbwkWebView.topAnchor.constraint(equalTo: containerV.topAnchor).isActive          = true
+
+        //pbwkWebView.rightAnchor.constraint(equalTo: containerV.rightAnchor).isActive      = true
+
+        //pbwkWebView.leftAnchor.constraint(equalTo: containerV.leftAnchor).isActive        = true
+
+        //pbwkWebView.bottomAnchor.constraint(equalTo: containerV.bottomAnchor).isActive    = true
+
+        //pbwkWebView.heightAnchor.constraint(equalTo: containerV.heightAnchor).isActive    = true
         
         
         pbwkWebView.navigationDelegate = self
@@ -372,140 +332,6 @@ public class PBViewController: UIViewController, WKNavigationDelegate, SFSafariV
         
         controller.dismiss(animated: true, completion: nil)
     }
-    
-    
-    /*// MARK: - UIWebView
-    
-    public func webViewDidFinishLoad(_ webView: UIWebView) {
-        
-        progressHUD?.removeFromSuperview()
-    }
-    
-    
-    public func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
-        
-        progressHUD?.removeFromSuperview()
-    }
-    
-    
-    public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
-        
-        switch navigationType {
-            
-        case .linkClicked:
-            
-            if let url = request.url
-            {
-                showLinksClicked(url: url)
-                
-                
-                return false
-            }
-            
-            
-        default:
-            
-            break
-        }
-        
-        
-        if let url = request.url
-        {
-            if url.absoluteString == PBConfig.shared.instanceObj?.productObj.productDict()["x_url_cancel"] as! String
-            {
-                clearUIWebViewCache()
-                
-                
-                (self.parent as! UINavigationController).popViewController(animated: true)
-                
-                
-                self.delegate?.userDidCancel()
-                
-                
-                /*let alert = UIAlertController(title: "Return to \(Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String)?", message: "Your PayBright loan request will not be completed.", preferredStyle: .alert)
-                 
-                 
-                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                 
-                 
-                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                 
-                 DispatchQueue.main.async {
-                 
-                 (self.parent as! UINavigationController).popViewController(animated: true)
-                 
-                 
-                 self.delegate?.userDidCancel()
-                 }
-                 }))
-                 
-                 
-                 self.present(alert, animated: true, completion: nil)*/
-            }
-            
-            else if url.absoluteString.contains(PBConfig.shared.instanceObj?.productObj.productDict()["x_url_complete"] as! String)
-            {
-                clearUIWebViewCache()
-                
-                
-                var urlParams = url.queryParameters
-                
-                
-                let generatedSignature = urlParams!["x_signature"]
-                
-                
-                urlParams?.removeValue(forKey: "x_signature")
-                
-                
-                if urlParams!["x_result"] == "Completed"
-                {
-                    let tupleArr = urlParams?.sorted(by: { $0.0 < $1.0 })
-                    
-                    
-                    var sortedStr = ""
-                    
-                    
-                    for tuple in tupleArr!
-                    {
-                        sortedStr.append(tuple.key)
-                        
-                        
-                        sortedStr.append(tuple.value)
-                    }
-                    
-                    
-                    if generatedSignature == sortedStr.HMAC(algorithm: .sha256, secret: PBConfig.shared.apiToken)
-                    {
-                        delegate?.transactionComplete(success: true, params: urlParams!)
-                    }
-                        
-                    else
-                    {
-                        delegate?.transactionComplete(success: false, params: [:])
-                    }
-                }
-                    
-                else
-                {
-                    delegate?.transactionComplete(success: false, params: [:])
-                }
-                
-                
-                (self.parent as! UINavigationController).popViewController(animated: true)
-            }
-            
-            /*else if url.absoluteString.contains(instanceObj.configObj.productObj.productDict()["x_url_callback"] as! String)         // Not required at the moment
-            {
-                delegate?.receivedCallback()
-            }*/
-            
-            
-            return true
-        }
-        
-        
-        return true
-    }*/
     
     
     // MARK: - WKWebView
